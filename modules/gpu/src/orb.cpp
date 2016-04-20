@@ -399,7 +399,7 @@ namespace
 cv::gpu::ORB_GPU::ORB_GPU(int nFeatures, float scaleFactor, int nLevels, int edgeThreshold, int firstLevel, int WTA_K, int scoreType, int patchSize) :
     nFeatures_(nFeatures), scaleFactor_(scaleFactor), nLevels_(nLevels), edgeThreshold_(edgeThreshold), firstLevel_(firstLevel), WTA_K_(WTA_K),
     scoreType_(scoreType), patchSize_(patchSize),
-    fastDetector_(DEFAULT_FAST_THRESHOLD)
+    fastDetector_(DEFAULT_FAST_THRESHOLD, true, 1)
 {
     CV_Assert(patchSize_ >= 2);
 

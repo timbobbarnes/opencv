@@ -53,15 +53,24 @@ namespace cv { namespace gpu { namespace device
 {
     namespace orb
     {
+        struct greater_pos : public thrust::binary_function<short2,short2,bool>
+        {
+            __host__ __device__ bool operator()(const short2& a, const short2& b) const
+            {
+                return (a.x > b.x) || ((a.x == b.x) && (a.y > b.y));
+            }
+        };
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         // cull
 
         int cull_gpu(int* loc, float* response, int size, int n_points)
         {
-            thrust::device_ptr<int> loc_ptr(loc);
+            thrust::device_ptr<short2> loc_ptr((short2 *) loc);
             thrust::device_ptr<float> response_ptr(response);
 
-            thrust::sort_by_key(response_ptr, response_ptr + size, loc_ptr, thrust::greater<float>());
+            thrust::sort_by_key(loc_ptr, loc_ptr + size, response_ptr, greater_pos());
+            thrust::stable_sort_by_key(response_ptr, response_ptr + size, loc_ptr, thrust::greater<float>());
 
             return n_points;
         }
